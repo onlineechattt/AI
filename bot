@@ -1,0 +1,59 @@
+function notifyConstructionManager() {
+  // 1. เชื่อมต่อกับ Sheet ที่เก็บข้อมูล PO
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("PO_Database"); 
+  var data = sheet.getDataRange().getValues();
+  
+  // 2. แยกหัวตารางออกและดึงเฉพาะข้อมูล
+  var headers = data[0];
+  var rows = data.slice(1);
+  
+  // 3. เรียงลำดับข้อมูลตาม RefCode เพื่อรักษาความสม่ำเสมอของลำดับตัวเลข (Numerical Sorting)
+  // RefCode อยู่ในคอลัมน์ที่ 2 (Index 1)
+  rows.sort(function(a, b) {
+    if (a[1] > b[1]) return -1; // เรียงจากล่าสุดไปเก่าสุด
+    if (a[1] < b[1]) return 1;
+    return 0;
+  });
+  
+  // 4. ดึงข้อมูลรายการล่าสุด (หรือจะเขียน Loop เพื่อกรองเฉพาะ Status = 'PENDING' ก็ได้)
+  var latestRow = rows[0]; 
+  
+  var timestamp = latestRow[0];
+  var refCode = latestRow[1];
+  var requester = latestRow[2];
+  var site = latestRow[3];
+  var items = latestRow[5];
+  var reason = latestRow[6];
+  
+  // 5. จัดรูปแบบข้อความแจ้งเตือน (ให้คล้ายกับที่ Mina หรือ AI Agent แจ้ง)
+  var message = "\n🚧 แจ้งเตือนฝ่ายก่อสร้าง: มีรายการรอตรวจสอบหน้างาน\n";
+  message += "------------------------\n";
+  message += "รหัสอ้างอิง: " + refCode + "\n";
+  message += "ผู้เบิก: " + requester + "\n";
+  message += "ไซต์งาน: " + site + "\n";
+  message += "จุดที่ใช้งาน: " + reason + "\n";
+  message += "------------------------\n";
+  message += "📦 รายการวัสดุ:\n" + items + "\n";
+  message += "------------------------\n";
+  message += "กรุณาตรวจสอบความถูกต้องของหน้างานและกดอนุมัติในระบบครับ";
+  
+  // 6. ส่งข้อความผ่าน LINE Notify
+  // เปลี่ยน YOUR_LINE_NOTIFY_TOKEN ให้เป็น Token ของกลุ่มฝ่ายก่อสร้าง
+  var lineToken = "weuy9N5uG3Ly2N1HtXll58M59Sy4LiHA5e0WQjEQUoai8AZ5cMblBUZgZzKu9sxmnq/VclbRZg1a9tyjOCB70GxJyHaNbJ1NuHjd7Ge1SUlSk5YKc66X6at/IdVlFrYJxd1iH7e0kWYSbk23aSWDTAdB04t89/1O/w1cDnyilFU="; 
+  var options = {
+    "method": "post",
+    "payload": {
+      "message": message
+    },
+    "headers": {
+      "Authorization": "Bearer " + lineToken
+    }
+  };
+  
+  try {
+    UrlFetchApp.fetch("https://notify-api.line.me/api/notify", options);
+    Logger.log("ส่งการแจ้งเตือนสำเร็จ: " + refCode);
+  } catch (error) {
+    Logger.log("เกิดข้อผิดพลาดในการส่ง LINE: " + error);
+  }
+}
