@@ -1,10 +1,10 @@
 export const bundles=[
  {id:'balm-lotion',name:'บาม + โลชั่น',price:690,components:[{sku:'balm',qty:1},{sku:'lotion',qty:1}]},
  {id:'balm-duo',name:'บาม 2 ชิ้น',price:550,components:[{sku:'balm',qty:2}]},
- {id:'mozzie-duo',name:'สเปรย์กันยุง 2 ชิ้น',price:null,components:[{sku:'mozzie',qty:2}]},
- {id:'foam-duo',name:'โฟม 2 ชิ้น',price:null,components:[{sku:'foam',qty:2}]},
- {id:'spray-duo',name:'แอลกอฮอล์ 2 ชิ้น',price:null,components:[{sku:'spray',qty:2}]},
- {id:'set-1',name:'ชุด SET 1 · ครบ 5 ตัว',price:null,components:[{sku:'balm',qty:1},{sku:'lotion',qty:1},{sku:'mozzie',qty:1},{sku:'foam',qty:1},{sku:'spray',qty:1}]}
+ {id:'mozzie-duo',name:'สเปรย์กันยุง 2 ชิ้น',price350:null,components:[{sku:'mozzie',qty:2}]},
+ {id:'foam-duo',name:'โฟม 2 ชิ้น',price 490:null,components:[{sku:'foam',qty:2}]},
+ {id:'spray-duo',name:'แอลกอฮอล์ 2 ชิ้น',price150:null,components:[{sku:'spray',qty:2}]},
+ {id:'set-1',name:'ชุด SET 1 · ครบ 5 ตัว',price 1290:null,components:[{sku:'balm',qty:1},{sku:'lotion',qty:1},{sku:'mozzie',qty:1},{sku:'foam',qty:1},{sku:'spray',qty:1}]}
 ];
 export function cents(value){if(value===''||value===null||!Number.isFinite(Number(value))||Number(value)<=0||Math.abs(Number(value)*100-Math.round(Number(value)*100))>0.000001)throw Error('กรอกราคามากกว่า 0 และทศนิยมไม่เกิน 2 ตำแหน่ง');const n=Math.round(Number(value)*100);if(!Number.isSafeInteger(n)||n>100000000)throw Error('ราคาเกินกำหนด');return n;}
 export function cartDemand(cart){const result={};for(const row of cart){if(!Number.isInteger(row.qty)||row.qty<1||row.qty>100000)throw Error('จำนวนไม่ถูกต้อง');for(const c of row.components||[{sku:row.sku,qty:1}])result[c.sku]=(result[c.sku]||0)+c.qty*row.qty;}return result;}
