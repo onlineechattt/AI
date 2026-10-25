@@ -1,7 +1,9 @@
+import {lbHistoryRows_} from './sales-history.js';
 export const demoProducts=[{sku:'balm',name:'Baby Rich Balm',price:290,image:''},{sku:'lotion',name:'Organic Lotion',price:390,image:''},{sku:'foam',name:'Baby Foam',price:350,image:''},{sku:'mozzie',name:'Mozzie Guard',price:190,image:''},{sku:'spray',name:'Sanitizer Spray',price:150,image:''}];
 export const day=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Bangkok'});
 export function seed(){return {products:structuredClone(demoProducts),booths:[{id:'DEMO-BOOTH',name:'ร้านตัวอย่าง · Baby Fair',location:'ข้อมูลสมมติสำหรับทดลอง'}],received:false,events:[],lots:demoProducts.map(p=>({key:p.sku+'|31/12/2028',sku:p.sku,exp:'31/12/2028',issued:24,returned:0,sold:0,remaining:24}))};}
 export function demoRun(db,action,p={}){
+ if(action==='history')return lbHistoryRows_(db.events,db.booths,p);
  if(action==='init')return snapshot(db,p.issueNo);
  if(action==='catalogSave'){const product=db.products.find(x=>x.sku===p.sku);Object.assign(product,{price:Number(p.price),image:p.image});return {success:true};}
  if(action==='retryNotify')return {success:true};
