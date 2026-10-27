@@ -1,4 +1,4 @@
-// lilbulle POS V12.1.2 | Bundle list revision 2026-10-27.1
+// lilbulle POS V12.1.5 | Bundle list revision 2026-10-27.1
 export const bundles=[
  {id:'balm-lotion',name:'บาม + โลชั่น',price:690,components:[{sku:'balm',qty:1},{sku:'lotion',qty:1}]},
  {id:'balm-duo',name:'บาม 2 ชิ้น',price:550,components:[{sku:'balm',qty:2}]},
@@ -16,3 +16,4 @@ export function assertStock(cart,available){for(const [sku,qty] of Object.entrie
 export function expandCart(cart){const grouped=new Map();const add=(sku,qty,priceCents)=>{const key=sku+':'+priceCents,old=grouped.get(key);if(old)old.qty+=qty;else grouped.set(key,{sku,qty,price:priceCents/100});};for(const row of cart){const amount=cents(row.price);if(!Number.isInteger(row.qty)||row.qty<1||row.qty>100000)throw Error('จำนวนไม่ถูกต้อง');if(!row.components){add(row.sku,row.qty,amount);continue;}const units=row.components.flatMap(c=>Array(c.qty).fill(c.sku));if(amount<units.length)throw Error('ราคาเซตต่ำเกินไปสำหรับจำนวนสินค้า');const base=Math.floor(amount/units.length),remainder=amount%units.length;units.forEach((sku,i)=>add(sku,row.qty,base+(i<remainder?1:0)));}const rows=[...grouped.values()];if(rows.length>30)throw Error('รายการเกินกำหนด กรุณาแยกบิล');return rows;}
 export function cartTotal(cart){return Math.round(cart.reduce((sum,r)=>sum+Math.round((Number(r.price)||0)*100)*r.qty,0))/100;}
 export function saleNote(cart,note=''){const sets=cart.filter(r=>r.components);const text=(sets.length?'เซต: '+sets.map(r=>r.name+' ×'+r.qty+' @'+Number(r.price).toFixed(2)).join(' / ')+(note?' | ':''):'')+note;if(text.length>500)throw Error('หมายเหตุพร้อมรายการเซตยาวเกิน 500 ตัวอักษร กรุณาย่อหมายเหตุหรือแยกบิล');return text;}
+
