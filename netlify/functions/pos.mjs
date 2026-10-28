@@ -1,3 +1,4 @@
+// lilbulle POS proxy V12.1.6 | 2026-10-28
 import {createHmac, timingSafeEqual} from 'node:crypto';
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
 const sign=(s,key)=>createHmac('sha256',key).update(s).digest('base64url');
@@ -14,7 +15,7 @@ export default async function handler(request,context={}){
   const text=await request.text();if(text.length>3100000)return json({error:'ไฟล์ใหญ่เกินไป'},413);
   const body=JSON.parse(text),action=body.action,payload=body.payload||{};
   if(action==='logout')return json({success:true},200,{'Set-Cookie':'lb_session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0'});
-  if(!['login','history','productImages','init','receive','sale','void','closeDay','upload','catalogSave','retryNotify','restock','receiveRestock','stockOut'].includes(action))return json({error:'คำสั่งไม่รองรับ'},400);
+  if(!['login','lineQuota','history','productImages','init','receive','sale','void','closeDay','upload','catalogSave','retryNotify','restock','receiveRestock','stockOut'].includes(action))return json({error:'คำสั่งไม่รองรับ'},400);
   const session=readSession(request.headers.get('cookie'),key);
   if(action!=='login'&&!session)return json({error:'กรุณาเข้าสู่ระบบ'},401);
   if(action!=='login')payload.staff=session.staff;
@@ -28,3 +29,4 @@ export default async function handler(request,context={}){
   return json({success:true,result:result.result,role:session.role,staff:session.staff});
  }catch{return json({error:'ยังยืนยันผลไม่ได้ กรุณาส่งคำขอเดิมซ้ำเพื่อเช็กผล ห้ามสร้างบิลใหม่แทน'},502);}
 }
+
