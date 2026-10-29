@@ -1,4 +1,4 @@
-// lilbulle POS V12.1.9 | Bundle list revision 2026-10-28.1
+// lilbulle POS V12.1.12 | Bundle list revision 2026-10-28.1
 export const bundles=[
  {id:'balm-lotion',name:'บาม + โลชั่น',price:690,components:[{sku:'balm',qty:1},{sku:'lotion',qty:1}]},
  {id:'balm-duo',name:'บาม 2 ชิ้น',price:590,components:[{sku:'balm',qty:2}]},
